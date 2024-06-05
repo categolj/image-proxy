@@ -5,33 +5,28 @@ displayName: Rename project
 recipeList:
 - org.openrewrite.java.ChangePackage:
       oldPackageName: com.example.opinionated # Base Package
-      newPackageName: foo.bar.demo # <-- change me
+      newPackageName: am.ik.blog # <-- change me
       caseSensitive: true
       filePattern: '**/*.java;**/*.properties;**/*.xml'
 - org.openrewrite.text.FindAndReplace:
       find: OpinionatedSpringBootAppApplication # Main Class Name
-      replace: DemoAppApplication # <-- change me
+      replace: ImageProxyApplication # <-- change me
       caseSensitive: true
       filePattern: '**/*.java;**/*.properties;**/*.xml'
 - org.openrewrite.text.FindAndReplace:
       find: com.example # Maven GroupId
-      replace: foo.bar # <-- change me
+      replace: am.ik.blog # <-- change me
       caseSensitive: true
       filePattern: '**/*.java;**/*.properties;**/*.xml'
 - org.openrewrite.text.FindAndReplace:
       find: opinionated-spring-boot-app # Maven ArtifactId
-      replace: demo # <-- change me
-      caseSensitive: true
-      filePattern: '**/*.java;**/*.properties;**/*.xml'
-- org.openrewrite.text.FindAndReplace:
-      find: opinionated # Base Package - Maven GroupId
-      replace: demo # <-- change me
+      replace: image-proxy # <-- change me
       caseSensitive: true
       filePattern: '**/*.java;**/*.properties;**/*.xml'
 - org.openrewrite.RenameFile:
       fileMatcher: '**/OpinionatedSpringBootAppApplication.java' # Main Class Name
-      fileName: DemoAppApplication.java # <-- change me
+      fileName: ImageProxyApplication.java # <-- change me
 - org.openrewrite.RenameFile:
       fileMatcher: '**/TestOpinionatedSpringBootAppApplication.java' # Test Main Class
-      fileName: TestDemoAppApplication.java # <-- change me
+      fileName: TestImageProxyApplication.java # <-- change me
 - org.openrewrite.java.RemoveUnusedImports

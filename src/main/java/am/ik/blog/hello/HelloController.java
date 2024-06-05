@@ -1,4 +1,4 @@
-package com.example.opinionated.hello;
+package am.ik.blog.hello;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.web.bind.annotation.GetMapping;

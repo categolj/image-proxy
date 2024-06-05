@@ -1,4 +1,4 @@
-package com.example.opinionated.todo;
+package am.ik.blog.todo;
 
 import java.util.UUID;
 

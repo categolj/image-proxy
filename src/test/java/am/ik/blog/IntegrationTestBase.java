@@ -1,4 +1,4 @@
-package com.example.opinionated;
+package am.ik.blog;
 
 import org.junit.jupiter.api.BeforeEach;
 

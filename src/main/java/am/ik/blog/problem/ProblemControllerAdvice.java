@@ -1,4 +1,4 @@
-package com.example.opinionated.problem;
+package am.ik.blog.problem;
 
 import java.util.Optional;
 

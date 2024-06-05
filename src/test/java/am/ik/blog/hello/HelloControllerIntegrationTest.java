@@ -1,6 +1,6 @@
-package com.example.opinionated.hello;
+package am.ik.blog.hello;
 
-import com.example.opinionated.IntegrationTestBase;
+import am.ik.blog.IntegrationTestBase;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.json.JsonContent;

@@ -1,4 +1,4 @@
-package com.example.opinionated.todo;
+package am.ik.blog.todo;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import static com.example.opinionated.todo.TodoBuilder.todo;
+import static am.ik.blog.todo.TodoBuilder.todo;
 
 @RestController
 public class TodoController {

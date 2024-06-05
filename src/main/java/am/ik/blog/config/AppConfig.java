@@ -1,4 +1,4 @@
-package com.example.opinionated.config;
+package am.ik.blog.config;
 
 import java.time.Duration;
 import java.util.function.Predicate;

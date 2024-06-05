@@ -1,8 +1,8 @@
-package com.example.opinionated.todo;
+package am.ik.blog.todo;
 
 import java.net.URI;
 
-import com.example.opinionated.IntegrationTestBase;
+import am.ik.blog.IntegrationTestBase;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.json.JsonContent;
