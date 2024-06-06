@@ -42,3 +42,35 @@ jobs:
         .github/workflows/wait.sh
         curl --fail --show-error --silent http://localhost:8080/api/hello
         pkill -KILL java
+    - name: Import Secrets
+      if: github.ref == 'refs/heads/main'
+      id: secrets
+      uses: hashicorp/vault-action@v3.0.0
+      with:
+        exportToken: true
+        exportEnv: true
+        method: jwt
+        url: ${{ secrets.VAULT_ADDR }}
+        role: cicd
+        secrets: |
+          kv/data/cicd/github api_token | GITHUB_API_TOKEN ;
+          kv/data/cicd/fly api_token | FLY_API_TOKEN
+    - name: Docker Login
+      if: github.ref == 'refs/heads/main'
+      run: docker login ghcr.io -u ${GITHUB_REPOSITORY_OWNER} -p ${GITHUB_API_TOKEN}
+    - name: Build Docker Image (JVM)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        set -e
+        ./mvnw -V --no-transfer-progress spring-boot:build-image -DskipTests -Dspring-boot.build-image.imageName=ghcr.io/${GITHUB_REPOSITORY}:jvm
+    - name: Build Docker Image (Native)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        set -e
+        ./mvnw -V --no-transfer-progress spring-boot:build-image -Pnative -DskipTests -Dspring-boot.build-image.imageName=ghcr.io/${GITHUB_REPOSITORY}:native
+    - name: Docker Push
+      if: github.ref == 'refs/heads/main'
+      run: |
+        set -e
+        docker push ghcr.io/${GITHUB_REPOSITORY}:jvm
+        docker push ghcr.io/${GITHUB_REPOSITORY}:native
