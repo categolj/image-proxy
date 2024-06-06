@@ -12,8 +12,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 @ConfigurationProperties(prefix = "image-proxy")
-public record ImageProxyProps(@DefaultValue("22") int compressionLevel, @DefaultValue("1024") int maxWidth,
-		@DefaultValue("/tmp/image-proxy") Path storePath) implements Validator {
+public record ImageProxyProps(@DefaultValue("22") int compressionLevel, @DefaultValue("false") boolean resizeEnabled,
+		@DefaultValue("1024") int maxWidth, @DefaultValue("/tmp/image-proxy") Path storePath) implements Validator {
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return clazz == ImageProxyProps.class;

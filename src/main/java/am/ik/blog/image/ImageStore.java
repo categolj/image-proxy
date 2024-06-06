@@ -69,7 +69,9 @@ public class ImageStore {
 				}
 			}
 			Image downloaded = imageDownloader.get();
-			Image image = ImageBuilder.from(downloaded).body(downloaded.resize(this.proxyProps.maxWidth())).build();
+			Image image = this.proxyProps.resizeEnabled()
+					? ImageBuilder.from(downloaded).body(downloaded.resize(this.proxyProps.maxWidth())).build()
+					: downloaded;
 			logger.info("op=store base=\"{}\"", base);
 			Files.write(raw, Objects.requireNonNull(image.body()), StandardOpenOption.CREATE,
 					StandardOpenOption.TRUNCATE_EXISTING);
