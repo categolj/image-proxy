@@ -14,7 +14,7 @@ import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
 import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.JdkClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.backoff.ExponentialBackOff;
 
@@ -24,7 +24,7 @@ public class AppConfig {
 	@Bean
 	public RestClientCustomizer restClientCustomizer() {
 		return builder -> builder
-			.requestFactory(ClientHttpRequestFactories.get(JdkClientHttpRequestFactory::new,
+			.requestFactory(ClientHttpRequestFactories.get(SimpleClientHttpRequestFactory::new,
 					ClientHttpRequestFactorySettings.DEFAULTS.withReadTimeout(Duration.ofSeconds(3))))
 			.requestInterceptor(new RetryableClientHttpRequestInterceptor(new ExponentialBackOff() {
 				{
