@@ -3,6 +3,7 @@ package am.ik.blog.config;
 import java.lang.reflect.Constructor;
 
 import am.ik.blog.image.Image;
+import co.elastic.logging.logback.EcsEncoder;
 
 import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
@@ -19,6 +20,12 @@ public class NativeHints {
 		public void registerHints(org.springframework.aot.hint.RuntimeHints hints, ClassLoader classLoader) {
 			for (Constructor<?> constructor : Image.class.getConstructors()) {
 				hints.reflection().registerConstructor(constructor, ExecutableMode.INVOKE);
+			}
+			try {
+				hints.reflection().registerConstructor(EcsEncoder.class.getConstructor(), ExecutableMode.INVOKE);
+			}
+			catch (NoSuchMethodException e) {
+				throw new IllegalStateException(e);
 			}
 		}
 
