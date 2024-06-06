@@ -164,6 +164,9 @@
 								<management.otlp.tracing.endpoint>
 									http://otel-collector.opentelemetry.svc.cluster.local:4318/v1/traces
 								</management.otlp.tracing.endpoint>
+								<management.otlp.logs.endpoint>
+									http://otel-collector.opentelemetry.svc.cluster.local:4318/v1/logs
+								</management.otlp.logs.endpoint>
 							</systemPropertyVariables>
 						</configuration>
 					</execution>
