@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 
 import am.ik.blog.image.Image;
 import co.elastic.logging.logback.EcsEncoder;
+import jakarta.annotation.Nullable;
 
 import org.springframework.aot.hint.ExecutableMode;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
@@ -17,7 +18,7 @@ public class NativeHints {
 	public static class RuntimeHints implements RuntimeHintsRegistrar {
 
 		@Override
-		public void registerHints(org.springframework.aot.hint.RuntimeHints hints, ClassLoader classLoader) {
+		public void registerHints(org.springframework.aot.hint.RuntimeHints hints, @Nullable ClassLoader classLoader) {
 			for (Constructor<?> constructor : Image.class.getConstructors()) {
 				hints.reflection().registerConstructor(constructor, ExecutableMode.INVOKE);
 			}

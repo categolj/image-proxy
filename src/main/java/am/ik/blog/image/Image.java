@@ -17,14 +17,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import org.jilt.Builder;
 import org.jilt.BuilderStyle;
-import org.jilt.Opt;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 
 @Builder(style = BuilderStyle.STAGED, toBuilder = "from")
-public record Image(@JsonIgnore String path, MediaType contentType, String eTag, long lastModified,
-		@Opt @JsonIgnore @Nullable byte[] body, @Opt @JsonIgnore @Nullable Function<Type, Resource> resourceLoader) {
+public record Image(@JsonIgnore String path, @Nullable MediaType contentType, @Nullable String eTag, long lastModified,
+		@JsonIgnore @Nullable byte[] body, @JsonIgnore @Nullable Function<Type, Resource> resourceLoader) {
 
 	enum Type {
 
@@ -71,7 +70,7 @@ public record Image(@JsonIgnore String path, MediaType contentType, String eTag,
 		g2d.drawImage(tmp, 0, 0, null);
 		g2d.dispose();
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		ImageIO.write(resizedImage, this.contentType().getSubtype(), outputStream);
+		ImageIO.write(resizedImage, this.contentType() == null ? "png" : this.contentType().getSubtype(), outputStream);
 		return outputStream.toByteArray();
 	}
 }

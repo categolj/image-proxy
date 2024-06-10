@@ -22,13 +22,9 @@ public class ImageProxyController {
 
 	private final ImageStore imageStore;
 
-	private final ImageProxyProps proxyProps;
-
-	public ImageProxyController(RestClient.Builder restClientBuilder, ImageStore imageStore,
-			ImageProxyProps proxyProps) {
+	public ImageProxyController(RestClient.Builder restClientBuilder, ImageStore imageStore) {
 		this.restClient = restClientBuilder.build();
 		this.imageStore = imageStore;
-		this.proxyProps = proxyProps;
 	}
 
 	@GetMapping(path = "/{owner}/{repo}/assets/{userId}/{imageId}")
@@ -47,9 +43,9 @@ public class ImageProxyController {
 			HttpHeaders responseHeaders = downloaded.getHeaders();
 			return ImageBuilder.image()
 				.path(path)
+				.lastModified(responseHeaders.getLastModified())
 				.contentType(responseHeaders.getContentType())
 				.eTag(responseHeaders.getETag())
-				.lastModified(responseHeaders.getLastModified())
 				.body(downloaded.getBody())
 				.build();
 		});
