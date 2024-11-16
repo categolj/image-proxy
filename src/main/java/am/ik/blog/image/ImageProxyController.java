@@ -27,28 +27,48 @@ public class ImageProxyController {
 		this.imageStore = imageStore;
 	}
 
+	@GetMapping(path = "/user-attachments/assets/{imageId}")
+	public ResponseEntity<?> proxy(@PathVariable String imageId,
+			@RequestHeader(name = HttpHeaders.IF_MODIFIED_SINCE, required = false) String ifModifiedSince,
+			@RequestHeader(name = HttpHeaders.IF_NONE_MATCH, required = false) String ifNoneMatch,
+			@RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) List<String> acceptEncodings) {
+		String path = "user-attachments/assets/%s".formatted(imageId);
+		return buildImageResponse(acceptEncodings, path);
+	}
+
 	@GetMapping(path = "/{owner}/{repo}/assets/{userId}/{imageId}")
 	public ResponseEntity<?> proxy(@PathVariable String owner, @PathVariable String repo, @PathVariable String userId,
 			@PathVariable String imageId,
 			@RequestHeader(name = HttpHeaders.IF_MODIFIED_SINCE, required = false) String ifModifiedSince,
 			@RequestHeader(name = HttpHeaders.IF_NONE_MATCH, required = false) String ifNoneMatch,
-			@RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) List<String> acceptEncodings)
-			throws IOException {
+			@RequestHeader(name = HttpHeaders.ACCEPT_ENCODING, required = false) List<String> acceptEncodings) {
 		String path = "%s/%s/assets/%s/%s".formatted(owner, repo, userId, imageId);
-		Image image = this.imageStore.readOrStore(path, () -> {
-			var downloaded = this.restClient.get()
-				.uri("https://github.com/{owner}/{repo}/assets/{userId}/{imageId}", owner, repo, userId, imageId)
-				.retrieve()
-				.toEntity(byte[].class);
-			HttpHeaders responseHeaders = downloaded.getHeaders();
-			return ImageBuilder.image()
-				.path(path)
-				.lastModified(responseHeaders.getLastModified())
-				.contentType(responseHeaders.getContentType())
-				.eTag(responseHeaders.getETag())
-				.body(downloaded.getBody())
-				.build();
-		});
+		return buildImageResponse(acceptEncodings, path);
+	}
+
+	@DeleteMapping(path = "/{owner}/{repo}/assets/{userId}/{imageId}")
+	public ResponseEntity<?> delete(@PathVariable String owner, @PathVariable String repo, @PathVariable String userId,
+			@PathVariable String imageId) {
+		String path = "%s/%s/assets/%s/%s".formatted(owner, repo, userId, imageId);
+		this.imageStore.clear(path);
+		return ResponseEntity.noContent().build();
+	}
+
+	Image supplyImage(String path, String origin) {
+		var downloaded = this.restClient.get().uri(origin).retrieve().toEntity(byte[].class);
+		HttpHeaders responseHeaders = downloaded.getHeaders();
+		return ImageBuilder.image()
+			.path(path)
+			.lastModified(responseHeaders.getLastModified())
+			.contentType(responseHeaders.getContentType())
+			.eTag(responseHeaders.getETag())
+			.body(downloaded.getBody())
+			.build();
+	}
+
+	ResponseEntity<?> buildImageResponse(List<String> acceptEncodings, String path) {
+		String origin = "https://github.com/" + path;
+		Image image = this.imageStore.readOrStore(path, () -> supplyImage(path, origin));
 		ResponseEntity.BodyBuilder builder = ResponseEntity.ok().headers(httpHeaders -> {
 			httpHeaders.setETag(image.eTag());
 			httpHeaders.setLastModified(image.lastModified());
@@ -62,14 +82,6 @@ public class ImageProxyController {
 			}
 		}
 		return builder.body(Objects.requireNonNull(image.resourceLoader()).apply(Image.Type.RAW));
-	}
-
-	@DeleteMapping(path = "/{owner}/{repo}/assets/{userId}/{imageId}")
-	public ResponseEntity<?> delete(@PathVariable String owner, @PathVariable String repo, @PathVariable String userId,
-			@PathVariable String imageId) {
-		String path = "%s/%s/assets/%s/%s".formatted(owner, repo, userId, imageId);
-		this.imageStore.clear(path);
-		return ResponseEntity.noContent().build();
 	}
 
 }
